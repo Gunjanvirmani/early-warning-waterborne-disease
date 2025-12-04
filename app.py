@@ -14,7 +14,7 @@ app.secret_key = "SK4fe5f16babd2aa415c62d6fc7ea10503"
 # ======================================================
 
 ACCOUNT_SID = "AC7d247a2a98284b168aa079c8e50d7742"
-AUTH_TOKEN  = "60d3b89f5e16d948be7eeee2ed117413"
+AUTH_TOKEN  = "8c5c7cafe03c99a0314f2ff154f5e422"
 TWILIO_FROM = "+19202676633"
 
 print("DEBUG: FINAL Twilio SID Used =", ACCOUNT_SID)
@@ -304,4 +304,5 @@ if __name__ == "__main__":
     else:
         # Running locally
         app.run(debug=True)
+
 
