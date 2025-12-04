@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waterborne Disease Prediction Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Main Dashboard CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="
+{% if risk_level == 'Low' %}risk-low
+{% elif risk_level == 'Medium' %}risk-medium
+{% elif risk_level == 'High' %}risk-high
+{% else %}risk-none
+{% endif %}
+">
+
+<div class="dashboard-wrapper">
+
+    <!-- HEADER -->
+    <header class="header-card">
+        <h1>Waterborne Disease Prediction Dashboard</h1>
+        <p>Real-time risk status and 7-day forecast of reported cases</p>
+    </header>
+
+    <!-- RISK SUMMARY -->
+    <section class="risk-section">
+
+        <div class="card risk-card">
+            <h2>Current Risk Level</h2>
+
+            {% if risk_level == "Low" %}
+                <div class="risk-value risk-text-low">Low</div>
+                <p class="risk-subtext">Situation is stable. No immediate danger detected.</p>
+
+            {% elif risk_level == "Medium" %}
+                <div class="risk-value risk-text-medium">Medium</div>
+                <p class="risk-subtext">Conditions require monitoring. Stay alert and prepared.</p>
+
+            {% elif risk_level == "High" %}
+                <div class="risk-value risk-text-high">High</div>
+                <p class="risk-subtext">Immediate response needed. Notify health authorities.</p>
+
+            {% else %}
+                <div class="risk-value risk-text-none">No Data</div>
+                <p class="risk-subtext">Submit input data to view risk classification.</p>
+            {% endif %}
+        </div>
+
+        <!-- Quick Legend -->
+        <div class="card legend-card">
+            <h3>Risk Color Legend</h3>
+            <ul>
+                <li><span class="dot dot-low"></span>Low risk – Safe / normal conditions</li>
+                <li><span class="dot dot-medium"></span>Medium risk – Monitor & prepare</li>
+                <li><span class="dot dot-high"></span>High risk – Take immediate action</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <!-- SMS ALERT (ONLY WHEN HIGH RISK) -->
+    {% if risk_level == "High" %}
+    <section class="card alert-card">
+        <div class="alert-header">
+            <span class="alert-icon">⚠️</span>
+            <div>
+                <h3>High Risk Alert</h3>
+                <p>Send an SMS notification to health officials or responsible authorities.</p>
+            </div>
+        </div>
+
+        <form class="sms-form" action="/send-alert" method="POST">
+            <label for="phone">Recipient Phone Number</label>
+            <input type="text" id="phone" name="phone" placeholder="+91XXXXXXXXXX" required>
+            <button type="submit" class="sms-btn">Send Alert SMS</button>
+        </form>
+
+        {% if alert_status %}
+            {% if "✔" in alert_status %}
+                <div class="status-message status-success">{{ alert_status }}</div>
+            {% else %}
+                <div class="status-message status-error">{{ alert_status }}</div>
+            {% endif %}
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- FORECAST SECTION -->
+    <section class="card forecast-card">
+        <h2>7-Day Forecast – Predicted Reported Cases</h2>
+
+        {% if forecast %}
+            <div class="chart-container">
+                <canvas id="forecastChart"></canvas>
+            </div>
+
+            <div class="forecast-grid">
+                {% for item in forecast %}
+                <div class="forecast-item">
+                    <p class="forecast-day">Day {{ loop.index }}</p>
+                    <p class="forecast-value">{{ item | round(2) }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-data-text">Forecast data is not available. Please try again after generating predictions.</p>
+        {% endif %}
+    </section>
+
+</div>
+
+<!-- CHART.JS SCRIPT -->
+<script>
+    const forecastData = {{ forecast | tojson | safe }};
+    if (forecastData && forecastData.length) {
+        const ctx = document.getElementById('forecastChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: forecastData.map((_, i) => "Day " + (i + 1)),
+                datasets: [{
+                    label: 'Predicted Reported Cases',
+                    data: forecastData,
+                    borderWidth: 3,
+                    tension: 0.35
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
