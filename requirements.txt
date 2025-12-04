@@ -1,10 +1,10 @@
 flask
-gunicorn
 numpy
 pandas
 scikit-learn
 joblib
-torch
 twilio
+gunicorn
 
-
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.9.1+cpu
