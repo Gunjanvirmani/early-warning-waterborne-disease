@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water-Borne Disease Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='data_entry.css') }}">
+</head>
+
+<body>
+
+    <!-- Waves background -->
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+    <div class="wave wave3"></div>
+
+    <div class="form-container">
+        <h2>Water-Borne Disease Report</h2>
+        <p class="sub-head">Health Officer Entry Panel</p>
+
+        <form action="/data-entry" method="POST">
+
+            <div class="form-grid">
+
+                <!-- ========== WATER QUALITY ========== -->
+                <div class="section-title">💧 Water Quality Inputs</div>
+
+                <div>
+                    <label for="water_pH">Water pH</label>
+                    <input type="text" id="water_pH" name="water_pH" placeholder="e.g. 7.2" required>
+                </div>
+
+                <div>
+                    <label for="turbidity">Turbidity (NTU)</label>
+                    <input type="text" id="turbidity" name="turbidity" placeholder="e.g. 5" required>
+                </div>
+
+                <div>
+                    <label for="bacteria_level">Bacteria Level (CFU)</label>
+                    <input type="text" id="bacteria_level" name="bacteria_level" placeholder="e.g. 50" required>
+                </div>
+
+                <div></div>
+
+                <!-- ========== LOCATION ========== -->
+                <div class="section-title">📍 Location</div>
+
+                <div>
+                    <label for="regionSelect">Region</label>
+                    <select name="region" id="regionSelect" required>
+                        <option value="">-- Select Region --</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tripura">Tripura</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="districtSelect">District</label>
+                    <select name="district" id="districtSelect" required>
+                        <option value="">-- Select District --</option>
+                    </select>
+                </div>
+
+                <!-- ========== ENVIRONMENT ========== -->
+                <div class="section-title">🌦 Environmental Inputs</div>
+
+                <div>
+                    <label for="temperature">Temperature (°C)</label>
+                    <input type="text" id="temperature" name="temperature" placeholder="e.g. 29.5" required>
+                </div>
+
+                <div>
+                    <label for="humidity">Humidity (%)</label>
+                    <input type="text" id="humidity" name="humidity" placeholder="e.g. 72" required>
+                </div>
+
+                <div>
+                    <label for="rainfall">Rainfall (mm)</label>
+                    <input type="text" id="rainfall" name="rainfall" placeholder="e.g. 40" required>
+                </div>
+
+                <div></div>
+
+                <!-- ========== POPULATION ========== -->
+                <div class="section-title">🧍 Population Data</div>
+
+                <div>
+                    <label for="population_density">Population Density</label>
+                    <input type="text" id="population_density" name="population_density" placeholder="e.g. 800" required>
+                </div>
+
+                <div></div>
+
+                <!-- ========== DISEASE INDICATORS ========== -->
+                <div class="section-title">🚨 Disease Indicators</div>
+
+                <div>
+                    <label for="diarrhea_cases">Diarrhea Cases</label>
+                    <input type="text" id="diarrhea_cases" name="diarrhea_cases" placeholder="e.g. 5" required>
+                </div>
+
+                <div>
+                    <label for="vomiting_cases">Vomiting Cases</label>
+                    <input type="text" id="vomiting_cases" name="vomiting_cases" placeholder="e.g. 3" required>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit">Submit Report</button>
+
+            </div> <!-- /form-grid -->
+
+        </form>
+
+        <p class="footer-text">© Health Monitoring System</p>
+    </div>
+
+    <!-- ========== CASCADING DROPDOWN SCRIPT ========== -->
+    <script>
+    const regionDistrictMap = {
+        "Arunachal Pradesh": ["Itanagar", "Tawang"],
+        "Assam": ["Guwahati", "Dibrugarh", "Silchar"],
+        "Manipur": ["Imphal East", "Imphal West"],
+        "Meghalaya": ["Shillong"],
+        "Mizoram": ["Aizawl", "Mamit"],
+        "Nagaland": ["Kohima", "Wokha", "Zunheboto", "Dimapur"],
+        "Sikkim": ["Gangtok", "Gyalshing"],
+        "Tripura": ["Agartala"]
+    };
+
+    const regionSelect = document.getElementById("regionSelect");
+    const districtSelect = document.getElementById("districtSelect");
+
+    regionSelect.addEventListener("change", function () {
+        const region = this.value;
+        districtSelect.innerHTML = '<option value="">-- Select District --</option>';
+
+        if (regionDistrictMap[region]) {
+            regionDistrictMap[region].forEach(dist => {
+                const opt = document.createElement("option");
+                opt.value = dist;
+                opt.textContent = dist;
+                districtSelect.appendChild(opt);
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>
